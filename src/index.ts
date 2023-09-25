@@ -17,7 +17,7 @@ bot.command('start', async (ctx) => {
 
   JOBS[chatReferenceId]?.cancel()
 
-  JOBS[chatReferenceId] = schedule.scheduleJob('*/36 * * * *', async () => {
+  JOBS[chatReferenceId] = schedule.scheduleJob('*/5 * * * *', async () => {
     const date = format(new Date(), 'dd MMM yyyy, HH:mm')
 
     try {
