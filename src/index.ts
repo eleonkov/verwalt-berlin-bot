@@ -20,11 +20,11 @@ bot.command('start', async (ctx) => {
   JOBS[chatReferenceId] = schedule.scheduleJob('*/5 * * * *', async () => {
     const date = format(new Date(), 'dd MMM yyyy, HH:mm')
 
-    try {
-      const browser = await puppeteer.launch({
-        headless: 'new',
-      })
+    const browser = await puppeteer.launch({
+      headless: 'new',
+    })
 
+    try {
       const page = await browser.newPage()
 
       // Home page
@@ -35,13 +35,13 @@ bot.command('start', async (ctx) => {
       // Click book appointment button
       await page.click('.slide-content a.button.arrow-right')
       await page.waitForNavigation()
-      await sleep(5000)
+      await sleep(20000)
 
       // Click terms & conditions checkbox + next button
       await page.click('.label-right.required')
       await page.click('.ui-button-text.ui-c')
       await page.waitForNavigation()
-      await sleep(5000)
+      await sleep(20000)
 
       // Country
       const select1 = await page.$('[name="sel_staat"]')
@@ -58,22 +58,26 @@ bot.command('start', async (ctx) => {
       await select3?.select('2') // No
       await sleep(3000)
 
-      // Apply for a residence title
-      await page.click('input[value="169-0-1"] + label')
+      // extand for a residence title
+
+      // if apply  await page.click('input[value="169-0-1"] + label')
+      await page.click('input[value="169-0-2"] + label')
       await sleep(3000)
 
-      // Economic activity
-      await page.click('input[value="169-0-1-1"] + label')
+      // educational activity
+
+      //if econ  await page.click('input[value="169-0-1-1"] + label')
+      await page.click('input[value="169-0-2-3"] + label')
       await sleep(3000)
 
-      // EU Blue Card / Blaue Karte EU (sect. 18b para. 2)
-      await page.click('input[value="169-0-1-1-324659"] + label')
+      // 16b studies paragraph
+      await page.click('input[value="169-0-2-3-305244"] + label')
       await sleep(5000)
 
       // Click next button
       await page.click('.ui-button-text.ui-c')
       await page.waitForNavigation()
-      await sleep(5000)
+      await sleep(20000)
 
       const hasAvailableDates = await page.evaluate(async () => {
         const messagesBox = document.getElementById('messagesBox')
@@ -92,6 +96,8 @@ bot.command('start', async (ctx) => {
       browser.close()
     } catch (error) {
       console.log(`${date}: Something went wrong.`)
+
+      browser.close()
     }
   })
 
