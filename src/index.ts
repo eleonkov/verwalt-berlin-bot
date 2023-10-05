@@ -21,7 +21,7 @@ bot.command('start', async (ctx) => {
 
   const page = await browser.newPage()
 
-  page.on('dialog', async (dialog) => {
+  await page.on('dialog', async (dialog) => {
     await dialog.dismiss()
   })
 
