@@ -30,7 +30,6 @@ bot.command('start', async (ctx) => {
 
     try {
       // Home page
-      await page.reload
       await page.goto('https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en', { waitUntil: 'networkidle0' })
 
       // Click book appointment button
