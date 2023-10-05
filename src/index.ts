@@ -30,9 +30,8 @@ bot.command('start', async (ctx) => {
 
     try {
       // Home page
-      await page.goto('https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en', {
-        waitUntil: 'networkidle0',
-      })
+      await page.goto('https://google.com/', { waitUntil: 'networkidle0' })
+      await page.goto('https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en', { waitUntil: 'networkidle0' })
 
       // Click book appointment button
       await page.click('.slide-content a.button.arrow-right')
