@@ -17,16 +17,14 @@ bot.command('start', async (ctx) => {
 
   JOBS[chatReferenceId]?.cancel()
 
-  JOBS[chatReferenceId] = schedule.scheduleJob('*/5 * * * *', async () => {
+  const browser = await puppeteer.launch({ headless: false })
+
+  const page = await browser.newPage()
+
+  JOBS[chatReferenceId] = schedule.scheduleJob('*/4 * * * *', async () => {
     const date = format(new Date(), 'dd MMM yyyy, HH:mm')
 
-    const browser = await puppeteer.launch({
-      headless: 'new',
-    })
-
     try {
-      const page = await browser.newPage()
-
       // Home page
       await page.goto('https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en', {
         waitUntil: 'networkidle0',
@@ -35,13 +33,13 @@ bot.command('start', async (ctx) => {
       // Click book appointment button
       await page.click('.slide-content a.button.arrow-right')
       await page.waitForNavigation()
-      await sleep(20000)
+      await sleep(5000)
 
       // Click terms & conditions checkbox + next button
       await page.click('.label-right.required')
       await page.click('.ui-button-text.ui-c')
       await page.waitForNavigation()
-      await sleep(20000)
+      await sleep(7000)
 
       // Country
       const select1 = await page.$('[name="sel_staat"]')
@@ -77,7 +75,7 @@ bot.command('start', async (ctx) => {
       // Click next button
       await page.click('.ui-button-text.ui-c')
       await page.waitForNavigation()
-      await sleep(20000)
+      await sleep(5000)
 
       const hasAvailableDates = await page.evaluate(async () => {
         const messagesBox = document.getElementById('messagesBox')
@@ -89,15 +87,13 @@ bot.command('start', async (ctx) => {
         const screenshot = await page.screenshot()
 
         await ctx.replyWithPhoto({ source: screenshot })
+
+        JOBS[chatReferenceId]?.cancel()
       } else {
         console.log(`${date}: No dates available for the selected service.`)
       }
-
-      browser.close()
     } catch (error) {
       console.log(`${date}: Something went wrong.`)
-
-      browser.close()
     }
   })
 
