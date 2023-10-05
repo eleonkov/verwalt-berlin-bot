@@ -19,18 +19,18 @@ bot.command('start', async (ctx) => {
 
   const browser = await puppeteer.launch({ headless: false })
 
-  const page = await browser.newPage()
-
-  await page.on('dialog', async (dialog) => {
-    await dialog.dismiss()
-  })
-
   JOBS[chatReferenceId] = schedule.scheduleJob('*/2 * * * *', async () => {
     const date = format(new Date(), 'dd MMM yyyy, HH:mm')
 
+    const page = await browser.newPage()
+
+    await page.on('dialog', async (dialog) => {
+      await dialog.dismiss()
+    })
+
     try {
       // Home page
-      await page.goto('https://google.com/', { waitUntil: 'networkidle0' })
+      await page.reload
       await page.goto('https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en', { waitUntil: 'networkidle0' })
 
       // Click book appointment button
@@ -94,9 +94,11 @@ bot.command('start', async (ctx) => {
         JOBS[chatReferenceId]?.cancel()
       } else {
         console.log(`${date}: No dates available for the selected service.`)
+        await page.close()
       }
     } catch (error) {
       console.log(`${date}: Something went wrong.`)
+      await page.close()
     }
   })
 
