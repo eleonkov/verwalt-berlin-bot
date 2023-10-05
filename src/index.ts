@@ -21,7 +21,11 @@ bot.command('start', async (ctx) => {
 
   const page = await browser.newPage()
 
-  JOBS[chatReferenceId] = schedule.scheduleJob('*/4 * * * *', async () => {
+  page.on('dialog', async (dialog) => {
+    await dialog.dismiss()
+  })
+
+  JOBS[chatReferenceId] = schedule.scheduleJob('*/3 * * * *', async () => {
     const date = format(new Date(), 'dd MMM yyyy, HH:mm')
 
     try {
